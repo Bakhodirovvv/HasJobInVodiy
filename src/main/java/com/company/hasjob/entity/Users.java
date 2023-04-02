@@ -1,12 +1,16 @@
 package com.company.hasjob.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.boot.autoconfigure.batch.BatchProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.Clock;
+//import java.time.Clock;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+//import java.time.ZoneId;
 
 @Data
 @AllArgsConstructor
@@ -24,29 +28,26 @@ public class Users {
     private String phoneNumber;
     @Column(nullable = false)
     private String password;
-    @OneToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(optional = false)
     private JobType job;
     private String photoUrl;
-    private Status status;
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private AuthRole authRole=AuthRole.USER;
-    private LocalDateTime createdAt=LocalDateTime.now(Clock.system(ZoneId.of("Asia/Tashkent")));
+    private Status status = Status.ACTIVE;
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private AuthRole authRole = AuthRole.USER;
+    //    @CreationTimestamp
+//    private LocalDateTime createdAt = LocalDateTime.now(Clock.system(ZoneId.of("Asia/Tashkent")));
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, columnDefinition = "timestamp default now()")
+    private LocalDateTime createdAt;
 
     private enum Status {
-        ACTIVE(0), NON_ACTIVE(-1), BLOCKED(-50), BANNED(-100);
-        private final int level;
-
-        Status(int level) {
-            this.level = level;
-        }
-
-        public int getLevel() {
-            return level;
-        }
+        ACTIVE, NON_ACTIVE, BLOCKED, BANNED;
     }
 
     private enum AuthRole {
-        ADMIN,USER
+        ADMIN, USER
     }
 }

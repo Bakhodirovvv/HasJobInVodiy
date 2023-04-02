@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class JobTypeDto {
-    private String name;
+public class SignInUserDto {
+    private String phoneNumber;
+    private String password;
 }

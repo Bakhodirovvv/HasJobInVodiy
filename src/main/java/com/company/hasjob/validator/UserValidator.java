@@ -2,19 +2,28 @@ package com.company.hasjob.validator;
 
 import com.company.hasjob.dto.UserDto;
 
+import java.util.Base64;
+
 public class UserValidator {
 
-    public static boolean signUp(UserDto userDto){
-        if (userDto.fio() == null || userDto.job() == null) {
+    public static boolean signUp(UserDto userDto) {
+        if (userDto.getFio() == null || userDto.getJob() == null) {
             return false;
         }
-        if (!userDto.password().equals(userDto.prePassword())) {
+        if (!userDto.getPassword().equals(userDto.getPrePassword())) {
             return false;
         }
-        if (!userDto.phoneNumber().matches("^\\+998([- ])?(\\d{2})([- ])?(\\d{3})([- ])?(\\d{2})([- ])?(\\d{2})$")) {
+        if (!userDto.getPhoneNumber().matches("^\\+998([- ])?(\\d{2})([- ])?(\\d{3})([- ])?(\\d{2})([- ])?(\\d{2})$")) {
             return false;
         }
-        return userDto.password().length() == 8;
+        return userDto.getPassword().length() == 8;
     }
 
+    public static String encodeUserPassword(String password) {
+        return Base64.getEncoder().encodeToString(password.getBytes());
+    }
+
+    public static boolean validatePasswordDB(String password, String encodeDbPassword) {
+        return encodeUserPassword(password).equals(encodeDbPassword);
+    }
 }

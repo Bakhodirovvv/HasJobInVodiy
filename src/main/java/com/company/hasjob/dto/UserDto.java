@@ -1,4 +1,18 @@
 package com.company.hasjob.dto;
 
-public record UserDto(String fio,String phoneNumber,String password,String prePassword,String job) {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class UserDto {
+    private String fio;
+    private String phoneNumber;
+    private String password;
+    private String prePassword;
+    private String job;
 }
