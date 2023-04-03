@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth/register")
-public class RegisterController {
+@RequestMapping("/auth")
+public class AuthController {
     private final RegisterService registerService;
 
-    @GetMapping
+    @GetMapping("/getAllJob")
     public HttpEntity<?> getAllJobTypes() {
         return registerService.getAllJobTypes();
     }

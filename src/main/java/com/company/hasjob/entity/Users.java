@@ -37,6 +37,8 @@ public class Users {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private AuthRole authRole = AuthRole.USER;
+    private Integer experience;
+    private int rate=5;
     //    @CreationTimestamp
 //    private LocalDateTime createdAt = LocalDateTime.now(Clock.system(ZoneId.of("Asia/Tashkent")));
     @CreationTimestamp
