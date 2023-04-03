@@ -21,17 +21,24 @@ public class AuthController {
     }
 
     @PostMapping("/signUp")
-    public HttpEntity<?> signUp(@RequestBody UserDto userDto){
+    public HttpEntity<?> signUp(@RequestBody UserDto userDto) {
         return registerService.signUp(userDto);
     }
 
     @PostMapping("/sendSms")
-    public ResponseEntity<?> getSmsCode(@RequestBody UserSmsDto userSmsDto){
+    public ResponseEntity<?> getSmsCode(@RequestBody UserSmsDto userSmsDto) {
         return registerService.getSmsCode(userSmsDto.getPhoneNumber(), userSmsDto.getRandomCode());
     }
 
     @PostMapping("/signIn")
-    public ResponseEntity<?> signIn(@RequestBody SignInUserDto signInUserDto){
+    public ResponseEntity<?> signIn(@RequestBody SignInUserDto signInUserDto) {
         return registerService.signIn(signInUserDto);
     }
+
+    @GetMapping("/menu")
+    public ResponseEntity<?> getMainMenu(@RequestParam String phoneNumber) {
+        return registerService.getMainMenu(phoneNumber);
+    }
+
+
 }
