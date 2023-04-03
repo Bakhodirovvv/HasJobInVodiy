@@ -1,12 +1,11 @@
 package com.company.hasjob.service;
 
-import com.company.hasjob.dto.JobTypeDto;
-import com.company.hasjob.dto.SignInUserDto;
-import com.company.hasjob.dto.UserDto;
+import com.company.hasjob.dto.*;
 import com.company.hasjob.entity.Ads;
 import com.company.hasjob.entity.JobType;
 import com.company.hasjob.entity.UserSMS;
 import com.company.hasjob.entity.Users;
+import com.company.hasjob.repository.AdsRepository;
 import com.company.hasjob.repository.JobTypeRepository;
 import com.company.hasjob.repository.UserSMSRepository;
 import com.company.hasjob.repository.UsersRepository;
@@ -19,10 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +30,7 @@ public class RegisterService {
     private final ModelMapper modelMapper;
     private final Random random;
     private final UserSMSRepository userSMSRepository;
+    private final AdsRepository adsRepository;
 
     public HttpEntity<?> getAllJobTypes() {
         List<JobType> all = jobTypeRepository.findAll();
@@ -100,8 +97,7 @@ public class RegisterService {
         //  findByUsersAndRandomCodeAndVerifiedFalse ushbu method true holatidan foydalanishimiz kerak
         UserSMS userSMS = userSMSRepository.findByUsersAndRandomCodeAndVerifiedFalse(user, randomCode);
         Users users = userSMS.getUsers();
-
-        return ResponseEntity.ok(" Royxatdan o'tib bolding " + users.getStatus());
+        return ResponseEntity.ok(users.getFio());
     }
 
     public ResponseEntity<?> signIn(SignInUserDto signInUserDto) {
@@ -109,6 +105,46 @@ public class RegisterService {
         if (!UserValidator.validatePasswordDB(signInUserDto.getPassword(), user.getPassword())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Password is invalid");
         }
-        return ResponseEntity.ok(user.getStatus());
+        return ResponseEntity.ok(user.getFio());
+    }
+
+    public ResponseEntity<?> getMainMenu(String phoneNumber) {
+        Users user = usersRepository.findByPhoneNumber(phoneNumber);
+        JobType jobType = jobTypeRepository.findByName("Ish beruvchi");
+        if (user == null){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User not found");
+        }
+        if (user.getJob().equals(jobType)){
+            List<Users> allByJob = usersRepository.findAllByJob(jobType);
+            List<ResponseUserDto> responseUserDtos = new ArrayList<>();
+            for (Users users : allByJob) {
+                ResponseUserDto build = ResponseUserDto.builder()
+                        .photoUrl(users.getPhotoUrl())
+                        .fio(users.getFio())
+                        .experience(users.getExperience())
+                        .jobName(users.getJob().getName())
+                        .phoneNumber(users.getPhoneNumber())
+                        .rate(users.getRate())
+                        .build();
+                responseUserDtos.add(build);
+            }
+            return ResponseEntity.ok(responseUserDtos);
+        } else {
+            List<Ads> allByActiveTrue = adsRepository.findAllByActiveTrue();
+            List<ResponseAdsDto> responseAdsDtos = new ArrayList<>();
+            for (Ads ads : allByActiveTrue) {
+                ResponseAdsDto build = ResponseAdsDto.builder()
+                        .title(ads.getTitle())
+                        .userName(ads.getUser().getFio())
+                        .longitude(ads.getLongitude())
+                        .address(ads.getAddress())
+                        .price(ads.getPrice())
+                        .description(ads.getDescription())
+                        .latitude(ads.getLatitude())
+                        .build();
+                responseAdsDtos.add(build);
+            }
+            return ResponseEntity.ok(responseAdsDtos);
+        }
     }
 }
