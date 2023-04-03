@@ -47,4 +47,16 @@ public class AuthController {
         return registerService.saveAds(adsSaveDto);
     }
 
+    @GetMapping("/getEmployeeAdsById")
+    public ResponseEntity<?> getEmployeeAdsById(@RequestParam Integer adsId){
+        return registerService.getEmployeeAdsById(adsId);
+    }
+
+    @GetMapping("/deleteEmployeeAdsById")
+    public ResponseEntity<?> deleteEmployeeAdsById(@RequestParam Integer adsId) {
+        return registerService.deleteEmployeeAdsById(adsId);
+    }
+
+
+
 }

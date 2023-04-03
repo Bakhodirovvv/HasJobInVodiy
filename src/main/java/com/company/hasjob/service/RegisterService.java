@@ -165,4 +165,33 @@ public class RegisterService {
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Don't save");
     }
+
+    public ResponseEntity<?> getEmployeeAdsById(Integer adsId) {
+        Optional<Ads> byId = adsRepository.findByAdsId(adsId);
+        if (byId.isPresent()){
+            Ads ads = byId.get();
+            AdsSaveDto build = AdsSaveDto.builder()
+                    .address(ads.getAddress())
+                    .price(ads.getPrice())
+                    .userId(ads.getUser().getId())
+                    .title(ads.getTitle())
+                    .longitude(ads.getLongitude())
+                    .description(ads.getDescription())
+                    .latitude(ads.getLatitude())
+                    .build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(build);
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Ads is not found");
+    }
+
+    public ResponseEntity<?> deleteEmployeeAdsById(Integer adsId) {
+        Optional<Ads> byAdsId = adsRepository.findByAdsId(adsId);
+        if (byAdsId.isPresent()){
+            Ads ads = byAdsId.get();
+            ads.setActive(false);
+            adsRepository.save(ads);
+            return ResponseEntity.ok("Successfully deleted");
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Ads is not found");
+    }
 }
