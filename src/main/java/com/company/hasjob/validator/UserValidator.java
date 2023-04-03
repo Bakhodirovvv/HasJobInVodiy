@@ -13,7 +13,7 @@ public class UserValidator {
         if (!userDto.getPassword().equals(userDto.getPrePassword())) {
             return false;
         }
-        if (!userDto.getPhoneNumber().matches("^\\+998([- ])?(\\d{2})([- ])?(\\d{3})([- ])?(\\d{2})([- ])?(\\d{2})$")) {
+        if (!userDto.getPhoneNumber().matches("(\\d{2})([- ])?(\\d{3})([- ])?(\\d{2})([- ])?(\\d{2})$")) {
             return false;
         }
         return userDto.getPassword().length() == 8;
