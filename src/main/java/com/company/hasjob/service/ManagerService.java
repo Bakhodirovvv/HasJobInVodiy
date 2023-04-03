@@ -1,7 +1,10 @@
 package com.company.hasjob.service;
 
+import com.company.hasjob.dto.JobTypeDto;
 import com.company.hasjob.dto.ResponseManagerDto;
+import com.company.hasjob.entity.JobType;
 import com.company.hasjob.entity.Users;
+import com.company.hasjob.repository.JobTypeRepository;
 import com.company.hasjob.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -16,6 +19,7 @@ import java.util.List;
 @Service
 public class ManagerService {
     private final UsersRepository usersRepository;
+    private final JobTypeRepository jobTypeRepository;
 
     public HttpEntity<?> getAlL() {
         List<Users> allByStatus = usersRepository.findAllByStatus();
@@ -31,6 +35,27 @@ public class ManagerService {
                     .build();
             dto.add(build);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(dto); 
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
+    }
+
+    public HttpEntity<?> addJob(JobTypeDto jobTypeDto) {
+        JobType build = JobType.builder()
+                .name(jobTypeDto.getName())
+                .build();
+        jobTypeRepository.save(build);
+        return ResponseEntity.status(HttpStatus.OK).body("successfully save");
+    }
+
+    public HttpEntity<?> getAllJobs() {
+        List<JobType> allByActiveTrue = jobTypeRepository.getAllByActiveTrue();
+        List<JobTypeDto> jobTypeDto = new ArrayList<>();
+        JobTypeDto build;
+        for (JobType jobType : allByActiveTrue) {
+            build = JobTypeDto.builder()
+              .name(jobType.getName())
+            .build();
+            jobTypeDto.add(build);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(jobTypeDto);
     }
 }
