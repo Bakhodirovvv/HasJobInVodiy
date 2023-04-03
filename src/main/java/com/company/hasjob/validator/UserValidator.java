@@ -1,6 +1,7 @@
 package com.company.hasjob.validator;
 
 import com.company.hasjob.dto.UserDto;
+import com.company.hasjob.dto.UsersInfoDto;
 
 import java.util.Base64;
 
@@ -25,5 +26,12 @@ public class UserValidator {
 
     public static boolean validatePasswordDB(String password, String encodeDbPassword) {
         return encodeUserPassword(password).equals(encodeDbPassword);
+    }
+
+    public static boolean userInfoIsEmpty(UsersInfoDto dto) {
+        if (dto.getFio() == null || dto.getJob() == null ) {
+            return false;
+        }
+        return dto.getExperience() >= 0;
     }
 }

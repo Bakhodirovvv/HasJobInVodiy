@@ -22,7 +22,6 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-
 public class RegisterService {
     private final UsersRepository usersRepository;
     private final JobTypeRepository jobTypeRepository;
