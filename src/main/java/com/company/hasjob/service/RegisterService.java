@@ -147,4 +147,22 @@ public class RegisterService {
             return ResponseEntity.ok(responseAdsDtos);
         }
     }
+
+    public ResponseEntity<?> saveAds(AdsSaveDto adsSaveDto) {
+        Optional<Users> byId = usersRepository.findById(adsSaveDto.getUserId());
+        if (byId.isPresent()) {
+            Ads ads = Ads.builder()
+                    .user(byId.get())
+                    .longitude(adsSaveDto.getLongitude())
+                    .latitude(adsSaveDto.getLatitude())
+                    .address(adsSaveDto.getAddress())
+                    .price(adsSaveDto.getPrice())
+                    .title(adsSaveDto.getTitle())
+                    .description(adsSaveDto.getDescription())
+                    .build();
+            Ads save = adsRepository.save(ads);
+            return ResponseEntity.ok("OK");
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Don't save");
+    }
 }

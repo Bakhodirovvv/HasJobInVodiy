@@ -1,5 +1,6 @@
 package com.company.hasjob.controller;
 
+import com.company.hasjob.dto.AdsSaveDto;
 import com.company.hasjob.dto.SignInUserDto;
 import com.company.hasjob.dto.UserDto;
 import com.company.hasjob.dto.UserSmsDto;
@@ -40,5 +41,10 @@ public class AuthController {
         return registerService.getMainMenu(phoneNumber);
     }
 
+
+    @PostMapping("saveAds")
+    public ResponseEntity<?> saveAds(@RequestBody AdsSaveDto adsSaveDto){
+        return registerService.saveAds(adsSaveDto);
+    }
 
 }
