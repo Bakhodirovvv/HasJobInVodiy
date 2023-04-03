@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface AdsRepository extends JpaRepository<Ads, Integer> {
-    Users getAllByActive();
+//    Users getAllByActive();
 
     @Query("select a from Ads a where a.isActive = true")
     List<Ads> findAllByActiveTrue();
