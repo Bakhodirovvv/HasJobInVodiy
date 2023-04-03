@@ -25,6 +25,7 @@ public class Ads {
     private Double price;
     @Column(nullable = false)
     private String title;
+    @Builder.Default
     private boolean isActive=true;
 
 
