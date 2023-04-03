@@ -32,6 +32,9 @@ public class UserValidator {
         if (dto.getFio() == null || dto.getJob() == null ) {
             return false;
         }
+        if (dto.getFio().trim().length() < 1 || dto.getPhotoUrl().trim().length() < 1) {
+            return false;
+        }
         return dto.getExperience() >= 0;
     }
 }
