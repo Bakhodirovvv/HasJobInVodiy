@@ -2,6 +2,8 @@ package com.company.hasjob.repository;
 
 import com.company.hasjob.entity.JobType;
 import com.company.hasjob.entity.Users;
+import com.google.common.base.Optional;
+import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
