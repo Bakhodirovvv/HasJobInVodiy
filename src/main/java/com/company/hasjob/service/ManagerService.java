@@ -58,4 +58,10 @@ public class ManagerService {
         }
         return ResponseEntity.status(HttpStatus.OK).body(jobTypeDto);
     }
+
+    public HttpEntity<?> deleteJobs(JobTypeDto jobTypeDto) {
+        JobType jobType = jobTypeRepository.updateJobTypeByName(jobTypeDto.getName());
+        jobType.setActive(false);
+        return ResponseEntity.status(HttpStatus.OK).body("successfully deleted");
+    }
 }

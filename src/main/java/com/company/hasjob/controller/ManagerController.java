@@ -12,16 +12,20 @@ import org.springframework.web.bind.annotation.*;
 public class ManagerController {
     private final ManagerService managerService;
 
-    @GetMapping("/manager/users/read")
+    @GetMapping("/users/read")
     public HttpEntity<?> getAllUser() {
         return managerService.getAlL();
     }
-    @PostMapping("/manager/addjob")
+    @PostMapping("/addjob")
     public HttpEntity<?> addJob(@RequestBody JobTypeDto jobTypeDto){
         return managerService.addJob(jobTypeDto);
     }
-    @GetMapping("manager/jobs/read")
+    @GetMapping("/jobs/read")
     public HttpEntity<?> getAllJob(){
         return managerService.getAllJobs();
+    }
+    @PostMapping("job/delete")
+    public HttpEntity<?> deleteJob(@RequestBody JobTypeDto jobTypeDto){
+        return managerService.deleteJobs(jobTypeDto);
     }
 }
