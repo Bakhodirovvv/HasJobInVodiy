@@ -13,4 +13,6 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
     @Query("select c from Chat c where c.isActive = true and c.fromUserId = ?1 ")
     List<Chat> findAllByActiveTrueAndFromUserId(Users fromUserId);
 
+    @Query("select c from Chat c where c.isActive = true and c.fromUserId = ?1 and c.toUserId = ?2")
+    Chat findByActiveTrueAndFromUserIdAndToUserId(Users fromUserId, Users toUserId);
 }

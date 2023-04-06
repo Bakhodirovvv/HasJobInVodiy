@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class MessageSendDto {
     private String text;
-    private String phoneNumber;
+    private Integer chatId;
+    private String userPhoneNumber;
     private LocalDateTime localDateTime;
 }

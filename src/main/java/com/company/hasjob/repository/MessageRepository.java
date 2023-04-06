@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface MessageRepository extends JpaRepository<Message, UUID> {
 
-    @Query("select m from Message m where m.isActive = true and m.chat = ?1 order by m.localDateTime desc ")
+    @Query("select m from Message m where m.isActive = true and m.chat = ?1 order by m.localDateTime asc ")
     List<Message> findAllByActiveTrueAndChat(Chat chat);
 
 }

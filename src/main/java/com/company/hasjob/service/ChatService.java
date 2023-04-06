@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -32,7 +31,7 @@ public class ChatService {
         Users toUser;
         for (Chat chat : all) {
             toUser = chat.getToUserId();
-            ResponseUserDto build = ResponseUserDto.builder()
+            ResponseUserDto dto = ResponseUserDto.builder()
                     .fio(toUser.getFio())
                     .rate(toUser.getRate())
                     .jobName(toUser.getJob().getName())
@@ -40,7 +39,7 @@ public class ChatService {
                     .phoneNumber(toUser.getPhoneNumber())
                     .photoUrl(toUser.getPhotoUrl())
                     .build();
-            responses.add(build);
+            responses.add(dto);
         }
         return ResponseEntity.ok(responses);
     }
@@ -50,11 +49,11 @@ public class ChatService {
         List<Chat> all = chatRepository.findAllByActiveTrueAndFromUserId(byPhoneNumber);
         Users toUser;
         Users toUserId = usersRepository.findByPhoneNumber(oneChatDto.getToPhoneNumber());
-        ResponseUserDto build = null;
+        ResponseUserDto dto = null;
         for (Chat chat : all) {
             if (Objects.equals(chat.getToUserId(), toUserId)){
                 toUser = chat.getToUserId();
-                build = ResponseUserDto.builder()
+                dto = ResponseUserDto.builder()
                         .fio(toUser.getFio())
                         .rate(toUser.getRate())
                         .jobName(toUser.getJob().getName())
@@ -65,29 +64,39 @@ public class ChatService {
                 break;
             }
         }
-        return ResponseEntity.ok(build);
+        return ResponseEntity.ok(dto);
     }
-
-
     public ResponseEntity<?> createChat(OneChatDto oneChatDto) {
         Users fromUser = usersRepository.findByPhoneNumber(oneChatDto.getFromPhoneNumber());
         Users toUser = usersRepository.findByPhoneNumber(oneChatDto.getToPhoneNumber());
+        Chat priviousChat = chatRepository.findByActiveTrueAndFromUserIdAndToUserId(fromUser, toUser);
+        if (priviousChat != null){
+            List<Message> priviousMessages = messageRepository.findAllByActiveTrueAndChat(priviousChat);
+            List<MessageSendDto> sendDtos = new ArrayList<>();
+            MessageSendDto dto;
+            for (Message message : priviousMessages) {
+                dto = MessageSendDto.builder()
+                        .text(message.getText())
+                        .chatId(message.getChat().getId())
+                        .userPhoneNumber(message.getUsers().getPhoneNumber())
+                        .localDateTime(message.getLocalDateTime())
+                        .build();
+                sendDtos.add(dto);
+            }
+            return ResponseEntity.ok(sendDtos);
+        }
+
         Chat chat = Chat.builder()
                 .fromUserId(fromUser)
                 .toUserId(toUser)
                 .build();
         Chat save = chatRepository.save(chat);
-        List<Message> messageList = messageRepository.findAllByActiveTrueAndChat(save);
-        List<MessageSendDto> sendDtos = new ArrayList<>();
-        MessageSendDto build;
-        for (Message message : messageList) {
-            build = MessageSendDto.builder()
-                    .text(message.getText())
-                    .phoneNumber(message.getUsers().getPhoneNumber())
-                    .localDateTime(message.getLocalDateTime())
-                    .build();
-            sendDtos.add(build);
-        }
-        return ResponseEntity.ok(sendDtos);
+        return getOneChat(oneChatDto);
+    }
+
+    public Chat getChatForMessage(OneChatDto oneChatDto) {
+        Users fromUser = usersRepository.findByPhoneNumber(oneChatDto.getFromPhoneNumber());
+        Users toUser = usersRepository.findByPhoneNumber(oneChatDto.getToPhoneNumber());
+        return chatRepository.findByActiveTrueAndFromUserIdAndToUserId(fromUser, toUser);
     }
 }
