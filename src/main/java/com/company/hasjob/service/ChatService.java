@@ -45,12 +45,12 @@ public class ChatService {
         return ResponseEntity.ok(responses);
     }
 
-    public ResponseEntity<?> getOneChat(String fromUserId, String phoneNumber) {
-        Users byPhoneNumber = usersRepository.findByPhoneNumber(fromUserId);
+    public ResponseEntity<?> getOneChat(OneChatDto oneChatDto) {
+        Users byPhoneNumber = usersRepository.findByPhoneNumber(oneChatDto.getFromPhoneNumber());
         List<Chat> all = chatRepository.findAllByActiveTrueAndFromUserId(byPhoneNumber);
-        ResponseUserDto build = null;
         Users toUser;
-        Users toUserId = usersRepository.findByPhoneNumber(phoneNumber);
+        Users toUserId = usersRepository.findByPhoneNumber(oneChatDto.getToPhoneNumber());
+        ResponseUserDto build = null;
         for (Chat chat : all) {
             if (Objects.equals(chat.getToUserId(), toUserId)){
                 toUser = chat.getToUserId();
@@ -76,8 +76,8 @@ public class ChatService {
                 .fromUserId(fromUser)
                 .toUserId(toUser)
                 .build();
-        chatRepository.save(chat);
-        List<Message> messageList = messageRepository.findAllByActiveTrueAndChat(chat);
+        Chat save = chatRepository.save(chat);
+        List<Message> messageList = messageRepository.findAllByActiveTrueAndChat(save);
         List<MessageSendDto> sendDtos = new ArrayList<>();
         MessageSendDto build;
         for (Message message : messageList) {

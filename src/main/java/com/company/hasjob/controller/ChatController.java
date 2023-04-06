@@ -4,6 +4,7 @@ import com.company.hasjob.dto.OneChatDto;
 import com.company.hasjob.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +19,9 @@ public class ChatController {
         return chatService.getAllChat(phoneNumber);
     }
 
-    @GetMapping("/getOneChat")
-    public ResponseEntity<?> getOneChat(@RequestBody OneChatDto oneChatDto){
-        return chatService.getOneChat(oneChatDto.getFromPhoneNumber(), oneChatDto.getToPhoneNumber());
+    @PostMapping("/getOneChat")
+    public HttpEntity<?> getOneChat(@RequestBody OneChatDto oneChatDto){
+        return chatService.getOneChat(oneChatDto);
     }
 
     @PostMapping("/create")
