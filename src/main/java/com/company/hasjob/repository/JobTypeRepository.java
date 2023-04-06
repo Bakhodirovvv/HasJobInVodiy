@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface JobTypeRepository extends JpaRepository<JobType, Integer> {
-    JobType findByName(String name);
+    @Query("select j from JobType j where j.name = ?1 and j.isActive = true")
+    JobType findByNameAndActiveTrue(String name);
     @Query("select j from JobType j where j.isActive = true")
     List<JobType> getAllByActiveTrue();
 }

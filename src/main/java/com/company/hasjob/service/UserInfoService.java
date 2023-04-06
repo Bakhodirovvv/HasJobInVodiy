@@ -38,7 +38,7 @@ public class UserInfoService {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(" Some Input is empty");
         }
         //jobType ni database dan tekshirish
-        JobType jobByName = jobTypeRepository.findByName(dto.getJob());
+        JobType jobByName = jobTypeRepository.findByNameAndActiveTrue(dto.getJob());
         if (jobByName == null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Job type is not found");
         }

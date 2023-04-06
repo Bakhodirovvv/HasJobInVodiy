@@ -32,9 +32,9 @@ public class RegisterService {
     private final AdsRepository adsRepository;
 
     public HttpEntity<?> getAllJobTypes() {
-        List<JobType> all = jobTypeRepository.findAll();
+        List<JobType> all = jobTypeRepository.getAllByActiveTrue();
         List<JobTypeDto> jobTypeDtos = new ArrayList<>();
-        JobTypeDto jobTypeDto = null;
+        JobTypeDto jobTypeDto;
         for (JobType jobType : all) {
             jobTypeDto = objectMapper.convertValue(jobType, JobTypeDto.class);
             jobTypeDtos.add(jobTypeDto);
@@ -49,11 +49,11 @@ public class RegisterService {
         // phone number or jobType ni database dan tekshirish
         Users userByPhoneNumber = usersRepository.findByPhoneNumber(userDto.getPhoneNumber());
         System.out.println(userByPhoneNumber);
-        if (userByPhoneNumber != null){
+        if (userByPhoneNumber != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("PhoneNumber is already exists");
         }
-        JobType jobByName = jobTypeRepository.findByName(userDto.getJob());
-        if (jobByName == null){
+        JobType jobByName = jobTypeRepository.findByNameAndActiveTrue(userDto.getJob());
+        if (jobByName == null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Job type is not found");
         }
         String userPassword = UserValidator.encodeUserPassword(userDto.getPassword());
@@ -71,7 +71,7 @@ public class RegisterService {
         int code = random.nextInt(899999) + 100000;
         System.out.println(" \n ++++++++++++++++++++++++++ \n " + code + "  ++++++++++++++++++++++++++ \n");
         Optional<UserSMS> byUsers = userSMSRepository.findByUsers(savedUser);
-        if (byUsers.isPresent()){
+        if (byUsers.isPresent()) {
             // userSMS ni codeni update qilindi
             UserSMS userSMS = byUsers.get();
             userSMS.setVerified(false);
@@ -101,7 +101,7 @@ public class RegisterService {
 
     public ResponseEntity<?> signIn(SignInUserDto signInUserDto) {
         Users user = usersRepository.findByPhoneNumber(signInUserDto.getPhoneNumber());
-        if (!UserValidator.validatePasswordDB(signInUserDto.getPassword(), user.getPassword())){
+        if (!UserValidator.validatePasswordDB(signInUserDto.getPassword(), user.getPassword())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Password is invalid");
         }
         return ResponseEntity.ok(user.getFio());
@@ -109,11 +109,11 @@ public class RegisterService {
 
     public ResponseEntity<?> getMainMenu(String phoneNumber) {
         Users user = usersRepository.findByPhoneNumber(phoneNumber);
-        JobType jobType = jobTypeRepository.findByName("Ish beruvchi");
-        if (user == null){
+        JobType jobType = jobTypeRepository.findByNameAndActiveTrue("Ish beruvchi");
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User not found");
         }
-        if (user.getJob().equals(jobType)){
+        if (user.getJob().equals(jobType)) {
             List<Users> allByJob = usersRepository.findAllByJob(jobType);
             List<ResponseUserDto> responseUserDtos = new ArrayList<>();
             for (Users users : allByJob) {
@@ -167,7 +167,7 @@ public class RegisterService {
 
     public ResponseEntity<?> getEmployeeAdsById(Integer adsId) {
         Optional<Ads> byId = adsRepository.findByAdsId(adsId);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             Ads ads = byId.get();
             AdsSaveDto build = AdsSaveDto.builder()
                     .address(ads.getAddress())
@@ -185,12 +185,29 @@ public class RegisterService {
 
     public ResponseEntity<?> deleteEmployeeAdsById(Integer adsId) {
         Optional<Ads> byAdsId = adsRepository.findByAdsId(adsId);
-        if (byAdsId.isPresent()){
+        if (byAdsId.isPresent()) {
             Ads ads = byAdsId.get();
             ads.setActive(false);
             adsRepository.save(ads);
             return ResponseEntity.ok("Successfully deleted");
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Ads is not found");
+    }
+
+    public ResponseEntity<?> getOneUsers(Integer id) {
+        Optional<Users> byId = usersRepository.findById(id);
+        if (byId.isPresent()){
+            Users users = byId.get();
+            ResponseUserDto build = ResponseUserDto.builder()
+                    .fio(users.getFio())
+                    .photoUrl(users.getPhotoUrl())
+                    .rate(users.getRate())
+                    .phoneNumber(users.getPhoneNumber())
+                    .experience(users.getExperience())
+                    .jobName(users.getJob().getName())
+                    .build();
+            return ResponseEntity.ok(build);
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Bad request");
     }
 }

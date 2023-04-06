@@ -23,9 +23,13 @@ public class Message {
     private UUID id;
     @Column(nullable = false)
     private String text;
-    private String localDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMM dd, HH:mm"));
     @ManyToOne
     private Chat chat;
+    @ManyToOne
+    private Users users;
+    @Builder.Default
+    private LocalDateTime localDateTime = LocalDateTime.now();
+    @Builder.Default
     private boolean isActive = true;
 
 }

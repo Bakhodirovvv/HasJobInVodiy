@@ -17,14 +17,15 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class Chat {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @UuidGenerator
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     @ManyToOne
     private Users fromUserId;
     @ManyToOne
     private Users toUserId;
+    @Builder.Default
     private LocalDateTime localDateTime = LocalDateTime.now(Clock.system(ZoneId.of("Asia/Tashkent")));
+    @Builder.Default
     private boolean isActive = true;
 
 }
