@@ -52,7 +52,7 @@ public class AuthController {
         return registerService.getEmployeeAdsById(adsId);
     }
 
-    @GetMapping("/deleteEmployeeAdsById")
+    @DeleteMapping("/deleteEmployeeAdsById")
     public ResponseEntity<?> deleteEmployeeAdsById(@RequestParam Integer adsId) {
         return registerService.deleteEmployeeAdsById(adsId);
     }

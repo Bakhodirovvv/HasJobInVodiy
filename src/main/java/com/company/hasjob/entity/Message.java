@@ -18,9 +18,8 @@ import java.util.UUID;
 @Builder
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @UuidGenerator
-    private UUID id;
+    private String id;
     @Column(nullable = false)
     private String text;
     @ManyToOne

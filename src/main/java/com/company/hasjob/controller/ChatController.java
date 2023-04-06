@@ -3,7 +3,6 @@ package com.company.hasjob.controller;
 import com.company.hasjob.dto.OneChatDto;
 import com.company.hasjob.service.ChatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +27,5 @@ public class ChatController {
     public ResponseEntity<?> createChat(@RequestBody OneChatDto oneChatDto ){
         return chatService.createChat(oneChatDto);
     }
-
 
 }
