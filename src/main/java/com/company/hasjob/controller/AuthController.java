@@ -57,6 +57,9 @@ public class AuthController {
         return registerService.deleteEmployeeAdsById(adsId);
     }
 
-
+    @GetMapping("")
+    private ResponseEntity<?> getOneUsers(@RequestParam Integer id){
+        return registerService.getOneUsers(id);
+    }
 
 }

@@ -46,7 +46,7 @@ public class Users {
     @Column(name = "created_at", nullable = false, columnDefinition = "timestamp default now()")
     private LocalDateTime createdAt;
 
-    private enum Status {
+    public static enum Status {
         ACTIVE, NON_ACTIVE, BLOCKED, BANNED;
     }
 
